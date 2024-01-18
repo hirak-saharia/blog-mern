@@ -79,12 +79,19 @@
   - Now we need to import instead of returning h1 ellement > <h1 className="text-3xl text-red-500">app</h1> and put all the pages inside the below:
     <BrowserRouter>
     <Routes>
-    <Route path="/" element={<Home />} />
-    <Route path="/about" element={<About />} />
-    <Route path="/sign-in" element={<SignIn />} />
-    <Route path="/sign-up" element={<SignIn />} />
-    <Route path="/dashboard" element={<Dashboard />} />
-    <Route path="/projects" element={<Projects />} />
+    <Route exact path="/" element={<Home />} />
+    <Route exact path="/about" element={<About />} />
+    <Route exact path="/sign-in" element={<SignIn />} />
+    <Route exact path="/sign-up" element={<SignIn />} />
+    <Route exact path="/dashboard" element={<Dashboard />} />
+    <Route exact path="/projects" element={<Projects />} />
     </Routes>
     </BrowserRouter>
+  - And also // import the components from their files
+    import Home from "./pages/Home";
+    import About from "./pages/About";
+    import SignIn from "./pages/SignIn";
+    import SignUp from "./pages/SignUp";
+    import Dashboard from "./pages/Dashboard";
+    import Projects from "./pages/Projects";
   - Test the routes > go to browser > http://127.0.0.1:5173/about
