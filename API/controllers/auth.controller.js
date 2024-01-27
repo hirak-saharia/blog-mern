@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
+import jwt from "jsonwebtoken";
 
 export const signup = async (req, res, next) => {
   //   console.log(req.body);
@@ -32,4 +33,40 @@ export const signup = async (req, res, next) => {
 
   //   await newUser.save();
   //   res.json("Signup Successfull");
+};
+
+export const signin = async (req, res, next) => {
+  const { email, password } = req.body;
+
+  if (!email || !password || email === "" || password === "") {
+    next(errorHandler(400, "All fields are required"));
+  }
+
+  try {
+    const validUser = await User.findOne({ email });
+    if (!validUser) {
+      return next(errorHandler(400, "User not found"));
+    }
+    const validPassword = bcryptjs.compareSync(password, validUser.password);
+    if (!validPassword) {
+      return next(errorHandler(400, "Invalid password"));
+    }
+
+    // If everything is corretly input
+    const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
+
+    // hide the password when the user is valid
+    const { password: pass, ...rest } = validUser._doc;
+
+    res
+      .status(200)
+      .cookie("access_token", token, {
+        httpOnly: true,
+      })
+      // .json(validUser);
+      .json(rest);
+  } catch (error) {
+    // used middleware for the error
+    next(error);
+  }
 };
