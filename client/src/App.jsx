@@ -9,6 +9,7 @@ import SignUp from "./pages/SignUp";
 import Dashboard from "./pages/Dashboard";
 import Projects from "./pages/Projects";
 import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 // export default function App() {
 //   return <h1 className="text-3xl font-bold underline">Hello world!</h1>;
@@ -26,6 +27,7 @@ export default function App() {
         <Route exact path="/dashboard" element={<Dashboard />}></Route>
         <Route exact path="/projects" element={<Projects />}></Route>
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 }
