@@ -1,13 +1,25 @@
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../redux/user/userSlice";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
 
   // loading effect
-  const [errorMessage, setErroMessage] = useState(null);
-  const [loading, setLoading] = useState(false);
+  // const [errorMessage, setErroMessage] = useState(null);
+  // const [loading, setLoading] = useState(false);
+
+  // Instead use loading, error message for loading effect
+  const { loading, error: errorMessage } = useSelector((state) => state.user);
+
+  // Initialized dispactch
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
@@ -19,11 +31,14 @@ export default function SignIn() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
-      return setErroMessage("Please fill out all the fields.");
+      // return setErroMessage("Please fill out all the fields.");
+      return dispatch(signInFailure("Please fill all the fields"));
     }
     try {
-      setLoading(true);
-      setErroMessage(null); // if the previous request has an error
+      // setLoading(true);
+      // setErroMessage(null); // if the previous request has an error
+      dispatch(signInStart()); // coming from userSlice.js reducers logic
+
       const res = await fetch("/api/auth/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -33,18 +48,21 @@ export default function SignIn() {
 
       // adding error for repetting same username
       if (data.success === false) {
-        return setErroMessage(data.message);
+        // return setErroMessage(data.message);
+        dispatch(signInFailure(data.message));
       }
       // if there is no error/everything is ok
-      setLoading(false);
+      // setLoading(false); //we dont need as signInFailure already has
 
       // Navigate to the Sign In page
       if (res.ok) {
+        dispatch(signInSuccess(data));
         navigate("/");
       }
     } catch (error) {
-      setErrorMessage(error.message);
-      setLoading(false);
+      // setErrorMessage(error.message);
+      // setLoading(false);
+      dispatch(signInFailure(error.message));
     }
   };
   return (
