@@ -70,3 +70,51 @@ export const signin = async (req, res, next) => {
     next(error);
   }
 };
+
+export const google = async (req, res, next) => {
+  const { email, name, googlePhotoUrl } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (user) {
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+      const { password, ...rest } = user._doc; // seperate the password and rest
+      res
+        .status(200)
+        .cookie("access_token", token, {
+          httpOnly: true,
+        })
+        .json(rest);
+    } else {
+      // create a random password
+      const generatePassword =
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-8);
+      // hashing the password with 10 run of salt
+      const hashedPassword = bcryptjs.hashSync(generatePassword, 10);
+      // create a new user
+      const newUser = new User({
+        username:
+          name.toLowerCase().split("").join("") +
+          Math.random().toString(9).slice(-4), // Saharia Zone => sahariazone123,
+        email,
+        password: hashedPassword,
+        profilePicture: googlePhotoUrl, // add photo to user.model.js
+      });
+      // save this user using newUser
+      await newUser.save();
+      // create a token using jwt.sign()
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+      // seperate the password and rest from the newUser
+      const { password, ...rest } = newUser._doc;
+      // create a response
+      res
+        .status(200)
+        .cookie("access_token", token, {
+          httpOnly: true,
+        })
+        .json(rest);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
