@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import Projects from "./pages/Projects";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import PrivateRoute from "./components/PrivateRoute";
 
 // export default function App() {
 //   return <h1 className="text-3xl font-bold underline">Hello world!</h1>;
@@ -24,7 +25,9 @@ export default function App() {
         <Route exact path="/about" element={<About />}></Route>
         <Route exact path="/sign-in" element={<SignIn />}></Route>
         <Route exact path="/sign-up" element={<SignUp />}></Route>
-        <Route exact path="/dashboard" element={<Dashboard />}></Route>
+        <Route element={<PrivateRoute></PrivateRoute>}>
+          <Route exact path="/dashboard" element={<Dashboard />}></Route>
+        </Route>
         <Route exact path="/projects" element={<Projects />}></Route>
       </Routes>
       <Footer />
