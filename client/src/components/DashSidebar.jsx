@@ -25,6 +25,7 @@ export default function DashSidebar() {
               icon={HiUser}
               label={"User"}
               labelColor="dark"
+              as="div" //to fix the === @react-refresh:160 Warning: validateDOMNesting(...): <a> cannot appear as a descendant of <a>.
             >
               Profile
             </Sidebar.Item>
