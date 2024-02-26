@@ -53,7 +53,10 @@ export const signin = async (req, res, next) => {
     }
 
     // If everything is corretly input
-    const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET);
+    const token = jwt.sign(
+      { id: validUser._id, isAdmin: validUser.isAdmin },
+      process.env.JWT_SECRET
+    );
 
     // hide the password when the user is valid
     const { password: pass, ...rest } = validUser._doc;
@@ -76,7 +79,10 @@ export const google = async (req, res, next) => {
   try {
     const user = await User.findOne({ email });
     if (user) {
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+      const token = jwt.sign(
+        { id: user._id, isAdmin: user.isAdmin },
+        process.env.JWT_SECRET
+      );
       const { password, ...rest } = user._doc; // seperate the password and rest
       res
         .status(200)
@@ -103,7 +109,10 @@ export const google = async (req, res, next) => {
       // save this user using newUser
       await newUser.save();
       // create a token using jwt.sign()
-      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+      const token = jwt.sign(
+        { id: newUser._id, isAdmin: newUser.isAdmin },
+        process.env.JWT_SECRET
+      );
       // seperate the password and rest from the newUser
       const { password, ...rest } = newUser._doc;
       // create a response
