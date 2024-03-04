@@ -15,7 +15,7 @@ export const create = async (req, res, next) => {
     .split(" ")
     .join("-")
     .toLowerCase()
-    .replace(/[^a-zA-Z0-0-]/g, ""); // replace everything is not number or letters with the dash or empty string or add with with
+    .replace(/[^a-zA-Z0-9-]/g, ""); // replace everything is not number or letters with the dash or empty string or add with with
 
   // create a post
   const newPost = new Post({
